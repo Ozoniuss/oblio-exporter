@@ -1,4 +1,4 @@
-package main
+package month
 
 import (
 	"bufio"
@@ -23,9 +23,9 @@ func parseMonthString(input string) int {
 	return m
 }
 
-// getMonthInput is a pretty dumb way of retrieving a month input, that only
+// GetMonthInput is a pretty dumb way of retrieving a month input, that only
 // accepts a number between 1 and 12
-func getMonthInput() int {
+func GetMonthInput() int {
 
 	s := bufio.NewScanner(os.Stdin)
 	var month int = 0
@@ -52,12 +52,12 @@ func endOfMonth(month time.Month) time.Time {
 	return beginningOfMonth(month).AddDate(0, 1, 0).Add(-time.Nanosecond)
 }
 
-func formatBeginningOfMonth(month time.Month) string {
+func FormatBeginningOfMonth(month time.Month) string {
 	d := beginningOfMonth(month)
 	return d.Format(time.DateOnly)
 }
 
-func formatEndOfMonth(month time.Month) string {
+func FormatEndOfMonth(month time.Month) string {
 	d := endOfMonth(month)
 	return d.Format(time.DateOnly)
 }

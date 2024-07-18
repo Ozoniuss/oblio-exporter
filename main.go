@@ -12,6 +12,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	config "oblio-exporter/config"
+	"oblio-exporter/httputil"
+	monthpkg "oblio-exporter/month"
 )
 
 type AuthResponse struct {
@@ -37,7 +41,7 @@ type requester struct {
 	token  string
 	logger *slog.Logger
 
-	config OblioConfig
+	config config.OblioConfig
 }
 
 // authorize generates a bearer token for the requester that can be used for
@@ -95,8 +99,8 @@ func (r *requester) downloadInvoiceForCif(month int, cif string) error {
 
 	query := req.URL.Query()
 	query.Add("cif", "RO"+cif)
-	query.Add("issuedBefore", formatEndOfMonth(time.Month(month)))
-	query.Add("issuedAfter", formatBeginningOfMonth(time.Month(month)))
+	query.Add("issuedBefore", monthpkg.FormatEndOfMonth(time.Month(month)))
+	query.Add("issuedAfter", monthpkg.FormatBeginningOfMonth(time.Month(month)))
 	req.URL.RawQuery = query.Encode()
 
 	response, err := http.DefaultClient.Do(req)
@@ -146,7 +150,7 @@ func (r *requester) downloadFile(generatedFilename, url string) (string, error) 
 	}
 	defer resp.Body.Close()
 
-	filename, err := getFileNameFromHeader(resp.Header.Get("Content-Disposition"))
+	filename, err := httputil.GetFileNameFromHeader(resp.Header.Get("Content-Disposition"))
 	if err != nil {
 		fmt.Printf("could not get filename from header: %s\n", err.Error())
 		fmt.Printf("creating filename from series and number instead: %s\n", generatedFilename)
@@ -167,7 +171,7 @@ func (r *requester) downloadFile(generatedFilename, url string) (string, error) 
 }
 
 func run() error {
-	config, err := NewOblioConfig()
+	config, err := config.NewOblioConfig()
 	if err != nil {
 		return fmt.Errorf("could not read config: %s", err.Error())
 	}
@@ -188,7 +192,7 @@ func run() error {
 	}
 	fmt.Printf("connected to oblio account %s\n", r.config.ClientId)
 
-	month := getMonthInput()
+	month := monthpkg.GetMonthInput()
 	M := time.Month(month)
 	fmt.Printf("exporting report for %s...\n", M)
 

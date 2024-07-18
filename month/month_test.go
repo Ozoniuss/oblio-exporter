@@ -1,4 +1,4 @@
-package main
+package month
 
 import (
 	"fmt"
@@ -77,8 +77,8 @@ func TestFormatMonth(t *testing.T) {
 
 	for _, tc := range testcases {
 		t.Run(fmt.Sprintf("formatting month %v", tc.month), func(t *testing.T) {
-			b := formatBeginningOfMonth(time.Month(tc.month))
-			e := formatEndOfMonth(time.Month(tc.month))
+			b := FormatBeginningOfMonth(time.Month(tc.month))
+			e := FormatEndOfMonth(time.Month(tc.month))
 			if b != tc.expectedBeginning {
 				t.Errorf("expected %s, got %s for beginning of month\n", tc.expectedBeginning, b)
 			}

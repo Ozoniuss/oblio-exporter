@@ -1,4 +1,4 @@
-package main
+package httputil
 
 import (
 	"errors"
@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-// getFileNameFromHeader extracts the filename from a header such as the
+// GetFileNameFromHeader extracts the filename from a header such as the
 // following:
 //
 // Content-Disposition:[attachment; filename="NB0007_eFactura.xml"]
 //
 // The value in between the brackets is passed to this function.
-func getFileNameFromHeader(header string) (string, error) {
+func GetFileNameFromHeader(header string) (string, error) {
 	start := strings.Index(header, "filename=") + len("filename=")
 	if start == -1 {
 		return "", errors.New("filename not found in Content-Disposition")
