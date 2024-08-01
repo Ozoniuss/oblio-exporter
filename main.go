@@ -19,11 +19,9 @@ import (
 )
 
 type AuthResponse struct {
-	Token       string `json:"access_token"`
-	ExpiresIn   string `json:"expires_in"` // is actually an int
-	TokenType   string `json:"token_type"`
-	Scope       string `json:"scope"`
-	RequestTime string `json:"request_time"` // is actually an int
+	Token     string `json:"access_token"`
+	TokenType string `json:"token_type"`
+	Scope     string `json:"scope"`
 }
 
 type ListResponse struct {
@@ -209,7 +207,29 @@ func run() error {
 }
 
 func main() {
-	err := run()
+
+	json2 := `
+	{
+		"mytype": "hello",
+		"lol": 4
+	}
+	`
+	r := strings.NewReader(json2)
+
+	type S struct {
+		Mytype string `json:"mytype"`
+	}
+
+	var s S
+	d := json.NewDecoder(r)
+	err := d.Decode(&s)
+	fmt.Println(s)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(err)
+
+	err = run()
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
